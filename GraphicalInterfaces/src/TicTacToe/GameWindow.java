@@ -18,7 +18,7 @@ public class GameWindow extends JFrame {
         setSize(WIDTH, HEIGHT);
         setLocationRelativeTo(null);
 
-        setTitle("TicTacToe");
+        setTitle("JtextArea");
         setResizable(false);
         btnStart = new JButton("New Game");
         btnExit = new JButton("Exit");
