@@ -1,6 +1,6 @@
 package Chat.Client;
 
-import Chat.Server.ServerWindow;
+import Chat.Server.ServerView;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -9,17 +9,17 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class ClientGUI extends JFrame {
+public class ClientGUI extends JFrame implements ClientView {
     private static final int WIDTH = 400;
     private static final int HEIGHT = 300;
 
     private final JTextArea log = new JTextArea();
 
     private final JPanel panelTop = new JPanel(new GridLayout(2, 1));
-    private final JTextField tfIPAddress = new JTextField("127.0.0.1");
-    private final JTextField tfIPort = new JTextField("8189");
+    private final JTextField tfIPAddress;
+    private final JTextField tfIPort;
     private final JTextField tfILogin = new JTextField();;
-    private final JPasswordField tfPassword = new JPasswordField("12345678");
+    private final JPasswordField tfPassword;
     private final JList listUsers = new JList();
     private final JButton btnLogin = new JButton("Login");
 
@@ -27,23 +27,30 @@ public class ClientGUI extends JFrame {
     private final JTextField tfMessage = new JTextField();
     private final JButton btnSend = new JButton("Send");
 
-    private final ClientGUI client;
+    private final ClientGUI clientGUI;
+    private final Client client;
 
-    public ClientGUI(ServerWindow serverWindow){
-        client = this;
+    public ClientGUI(ServerView serverWindow){
+        this.clientGUI = this;
+        this.client = new Client(clientGUI, serverWindow);
+
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setSize(WIDTH, HEIGHT);
         setTitle("Chat Client");
 
         JPanel dataAddress = new JPanel(new GridLayout(1, 2));
+
+        tfIPAddress = new JTextField(serverWindow.getServer().getIpAddress());
+        tfIPort = new JTextField(serverWindow.getServer().getiPort());
         dataAddress.add(tfIPAddress);
         dataAddress.add(tfIPort);
 
         JPanel dataLogin = new JPanel(new GridLayout(1, 3));
-        listUsers.setListData(serverWindow.getListUsers());
+        listUsers.setListData(serverWindow.getServer().getListUsers());
         listUsers.setVisibleRowCount(1);
         dataLogin.add(new JScrollPane(listUsers));
+        tfPassword = new JPasswordField(client.getPassword());
         dataLogin.add(tfPassword);
         dataLogin.add(btnLogin);
 
@@ -59,12 +66,12 @@ public class ClientGUI extends JFrame {
         JScrollPane scrollLog = new JScrollPane(log);
         add(scrollLog);
 
-        addListeners(serverWindow);
+        addListeners();
 
         setVisible(true);
     }
 
-    private void addListeners(ServerWindow serverWindow) {
+    private void addListeners() {
         listUsers.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -74,49 +81,35 @@ public class ClientGUI extends JFrame {
         btnLogin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (serverWindow.getServerWorking()) {
-                    String[] answer = serverWindow.authorizedUser(client, tfILogin.getText(), tfPassword.getText());
-                    log.append(answer[1]);
-                    if (answer[0].equals("true")) {
-                        panelTop.setVisible(false);
-                        log.append(answer[2]);
-                    }
-                } else {
-                    log.append("Server not working \n");
-                    panelTop.setVisible(true);
-                }
+                client.setLoginServer(clientGUI, tfILogin.getText(), tfPassword.getText());
             }
         });
         btnSend.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (serverWindow.getServerWorking()) {
-                    serverWindow.setMessage(tfILogin.getText(), tfMessage.getText());
-                } else {
-                    log.append("Server not working \n");
-                    panelTop.setVisible(true);
-                }
+                client.sendMessageOnServer(tfILogin.getText(), tfMessage.getText());
             }
         });
         tfMessage.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (serverWindow.getServerWorking()) {
-                    serverWindow.setMessage(tfILogin.getText(), tfMessage.getText());
-                } else {
-                    log.append("Server not working \n");
-                    panelTop.setVisible(true);
-                }
+                client.sendMessageOnServer(tfILogin.getText(), tfMessage.getText());
             }
         });
     }
 
+    @Override
     public void setMessage(String message){
         log.append(message);
     }
 
-    public String disconnect(){
-        panelTop.setVisible(true);
+    @Override
+    public void setVisiblePanelLogin(boolean visible) {
+        panelTop.setVisible(visible);
+    }
+
+    @Override
+    public String getMessage() {
         return log.getText();
     }
 }
