@@ -41,7 +41,7 @@ public class Main {
         arr3.add("2L");
 
         System.out.printf("%s = %s - %s\n", arr1,arr2,compareArrays(arr1,arr2));
-        System.out.printf("%s = %s - %s\n", arr1,arr3,compareArrays(arr1,arr3));
+        System.out.printf("%s = %s - %s\n\n", arr1,arr3,compareArrays(arr1,arr3));
 
 
         /*Напишите обобщенный класс Pair, который представляет собой пару значений разного типа.
@@ -49,12 +49,10 @@ public class Main {
         а также переопределение метода toString(), возвращающее строковое представление пары.
         */
         System.out.println("TASK3:");
-        Pair pair = new Pair();
-        //System.out.println(pair.getFirst());
-        //System.out.println(pair.getSecond());
-
-
-
+        Pair pair = new Pair(calculator, 5);
+        System.out.println(pair.getFirst());
+        System.out.println(pair.getSecond());
+        System.out.println(pair);
     }
 
     private static <T> boolean compareArrays(List<T> arr1, List<T> arr2) {
