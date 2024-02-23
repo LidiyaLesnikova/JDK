@@ -25,21 +25,9 @@ public class Main {
         Массивы могут быть любого типа данных, но должны иметь одинаковую длину и содержать элементы одного типа.
          */
         System.out.println("TASK2:");
-        List<Object> arr1 = new ArrayList<>();
-        arr1.add(1);
-        arr1.add(5.0);
-        arr1.add(8L);
-
-        List<Object> arr2 = new ArrayList<>();
-        arr2.add(4);
-        arr2.add(10.0);
-        arr2.add(1L);
-
-        List<Object> arr3 = new ArrayList<>();
-        arr3.add(2);
-        arr3.add(2.0);
-        arr3.add("2L");
-
+        List<Object> arr1 = List.of(1, 5.0, 8L);
+        List<Object> arr2 = List.of(4, 10.0, 1L);
+        List<Object> arr3 = List.of(2, 2.0, "2L");
         System.out.printf("%s = %s - %s\n", arr1,arr2,compareArrays(arr1,arr2));
         System.out.printf("%s = %s - %s\n\n", arr1,arr3,compareArrays(arr1,arr3));
 
