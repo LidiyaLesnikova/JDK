@@ -4,6 +4,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class Main {
     public static void main(String[] args) {
@@ -27,7 +28,7 @@ public class Main {
         System.out.println("TASK2:");
         List<Object> arr1 = List.of(1, 5.0, 8L);
         List<Object> arr2 = List.of(4, 10.0, 1L);
-        List<Object> arr3 = List.of(2, 2.0, "2L");
+        List<Object> arr3 = List.of("2", 2.0, 2L);
         System.out.printf("%s = %s - %s\n", arr1,arr2,compareArrays(arr1,arr2));
         System.out.printf("%s = %s - %s\n\n", arr1,arr3,compareArrays(arr1,arr3));
 
@@ -47,12 +48,7 @@ public class Main {
         if (arr1.size()!=arr2.size()) {
             return false;
         } else {
-            for (int i = 0; i < arr1.size(); i++) {
-                if (arr1.get(i).getClass()!=arr2.get(i).getClass()) {
-                    return false;
-                }
-            }
+            return IntStream.range(0, arr1.size()).filter(i -> arr1.get(i).getClass() != arr2.get(i).getClass()).count() == 0;
         }
-        return true;
     }
 }
